@@ -1,42 +1,86 @@
 <!DOCTYPE html>
 <html lang='en'>
-<head>
-	<meta charset='UTF-8'>
-	<title>GunDB Application</title>
-	<style>
-		body {
-			font-family: sans-serif;
-			color: #303438;
-			text-align: center;
-		}
-	</style>
-</head>
-<body>
+    <head>
+	      <meta charset='UTF-8'>
+	      <title>Setupminimal Sync</title>
+	      <style>
+		     .center {
+			       font-family: sans-serif;
+			       color: #303438;
+			       text-align: center;
+		     }
+	      </style>
+    </head>
+    <body>
+        <div class="center">
+            <h1>Hello!</h1>
+            <p>You are now helping to synchronize some simple data for <a href="https://setupminimal.github.io">Setupminimal</a></p>
+        </div>
 
-	<h1>Hello world gun app</h1>
-	<p>Open your web console</p>
+        <div class="center">
+            <p> Number of <span style="color: orange">orange</span> clicks:</p>
+            <div id="oranges">Loading...</div>
+            <p> Number of <span style="color: magenta">magenta</span> clicks:</p>
+            <div id="magentas">Loading...</div>
+        </div>
 
-	<!-- Loads gun -->
-	<script src='https://setupminimal-game-sync.herokuapp.com/gun/gun.js'></script>
-    <script src='https://setupminimal-game-sync.herokuapp.com/gun/lib/path.js'></script>
+        <div style="width: 100%;">
+            <div style="float:left; width: 50%">
+                <button id="orange">Orange!</button>
+            </div>
+            <div style="float:right;">
+                <button id="magenta">Magenta!</button>
+            </div>
+        </div>
+        <div style="clear:both"></div>
 
-    <script>
-	(function () {
+        <!-- Loads gun -->
+	      <script src='https://setupminimal-game-sync.herokuapp.com/gun/gun.js'></script>
+        <script src='https://setupminimal-game-sync.herokuapp.com/gun/lib/path.js'></script>
+        <script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
 
-		// Sync this gun instance with the server.
-		var gun = Gun([
-			'https://setupminimal-game-sync.herokuapp.com/gun',
-		]);
+        <script>
+	       (function () {
 
-		var data = gun.get('data');
+		         // Sync this gun instance with the server.
+             var gun = Gun([
+                 'https://setupminimal-game-sync.herokuapp.com/gun',
+		         ]);
 
-		data.put({ message: 'Hello world!' });
+		         var data = gun.get('orange-vs-magenta-clicks');
 
-		data.path('message').on(function (message) {
-			console.log('Message:', message);
-		});
+             data.get('orange').once(function(node) {
+                 if (node === undefined) {
+                     data.get('orange').put({count : 0});
+                 }
+             });
 
-	}())
-	</script>
-</body>
+             data.get('magenta').once(function(node) {
+                 if (node === undefined) {
+                     data.get('magenta').put({ count : 0});
+                 }
+             });
+
+             data.get('orange').on(function(node) {
+                 $("#oranges").text(node.count);
+             });
+
+             data.get('magenta').on(function(node) {
+                 $("#magentas").text(node.count);
+             });
+
+             $("#orange").click(function() {
+                 data.get('orange').once(function(node) {
+                     data.get('orange').put({count : node.count + 1});
+                 });
+             });
+
+             $("#magenta").click(function() {
+                 data.get('magenta').once(function(node) {
+                     data.get('magenta').put({count : node.count + 1});
+                 });
+             });
+	       }())
+	      </script>
+    </body>
 </html>
