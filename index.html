@@ -17,29 +17,21 @@
 	<p>Open your web console</p>
 
 	<!-- Loads gun -->
-	<script src='http://localhost:8080/gun/gun.js'></script>
-    <script src='http://localhost:8080/gun/lib/path.js'></script>
-    
-	<script>
+	<script src='http://setupminimal-game-sync.herokuapp.com/gun/gun.js'></script>
+    <script src='http://setupminimal-game-sync.herokuapp.com/gun/lib/path.js'></script>
+
+    <script>
 	(function () {
 
 		// Sync this gun instance with the server.
 		var gun = Gun([
-			'http://localhost:8080/gun',
+			'http://setupminimal-game-sync.herokuapp.com/gun',
 		]);
 
-		// Reads key 'data'.
 		var data = gun.get('data');
 
-		// Exposed so the JS console can see it.
-		window.data = data;
-
-		console.log('Gun reference exposed as %cwindow.data', 'color: red');
-
-		// Writes a value to the key 'data'.
 		data.put({ message: 'Hello world!' });
 
-		// Listen for real-time change events.
 		data.path('message').on(function (message) {
 			console.log('Message:', message);
 		});
